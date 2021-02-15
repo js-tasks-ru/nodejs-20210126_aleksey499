@@ -13,6 +13,7 @@ server.on('request', (req, res) => {
   if (!isNoNested) {
     res.statusCode = 400
     res.end('No access')
+    return
   }
 
   switch (req.method) {
@@ -24,7 +25,9 @@ server.on('request', (req, res) => {
           if (err.code === 'ENOENT') {
             res.statusCode = 404;
             res.end('No file')
+            return
           }
+          throw err
         }).on('data', (chunk) => {
           res.statusCode = 200
           res.end(chunk)
