@@ -20,6 +20,7 @@ server.on('request', (req, res) => {
   if (!isNoNested) {
     res.statusCode = 400
     res.end()
+    return
   }
 
   switch (req.method) {

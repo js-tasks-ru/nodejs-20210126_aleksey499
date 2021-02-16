@@ -1,6 +1,7 @@
 const url = require('url');
 const http = require('http');
 const path = require('path');
+const fs = require('fs')
 
 const server = new http.Server();
 
@@ -9,9 +10,24 @@ server.on('request', (req, res) => {
 
   const filepath = path.join(__dirname, 'files', pathname);
 
+  const isNoNested = !(pathname.indexOf('/') + 1) // Не очевидно, но лучше в переменной описать что я тут нахожу - являеться ли путь вложеным
+
+  if (!isNoNested) {
+    res.statusCode = 400
+    res.end()
+    return
+  }
+
   switch (req.method) {
     case 'DELETE':
-
+      fs.unlink(filepath, (err) => {
+        if(err) {
+          res.statusCode = 404
+          res.end('no')
+          return
+        }
+        res.end('ok')
+      })
       break;
 
     default:
