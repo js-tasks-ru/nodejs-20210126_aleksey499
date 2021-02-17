@@ -27,7 +27,8 @@ server.on('request', (req, res) => {
             res.end('No file')
             return
           }
-          throw err
+          res.statusCode = 500
+          res.end('Неизвестная ошибка сервера')
         }).on('data', (chunk) => {
           res.statusCode = 200
           res.end(chunk)
