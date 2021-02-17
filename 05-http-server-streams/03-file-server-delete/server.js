@@ -22,7 +22,7 @@ server.on('request', (req, res) => {
     case 'DELETE':
       fs.unlink(filepath, (err) => {
         if(err) {
-          res.statusCode = 404
+          err.code === 'ENOENT' ? res.statusCode = 404 : res.statusCode = 500
           res.end('no')
           return
         }
