@@ -10,23 +10,11 @@ const Router = require('koa-router');
 const router = new Router();
 const delayPublish = new EventEmmiter()
 
-const hundler = function (res) {
-    return function (message) {
-        res(message)
-    }
-}
-
-async function delaySubscribe(ctx, next) {
-    ctx.body = await new Promise(async (res,rej) => {
-        delayPublish.on('publish', hundler(res))
-        ctx.hundlerFun = hundler(res)
+router.get('/subscribe', async (ctx, next) => {
+    ctx.body = await new Promise(async res => {
+        delayPublish.once('publish', message => res(message))
         await next()
     })
-}
-
-router.get('/subscribe', delaySubscribe, async (ctx, next) => {
-    delayPublish.off('publish', ctx.hundlerFun)
-    await next()
 });
 
 router.post('/publish', async (ctx, next) => {
