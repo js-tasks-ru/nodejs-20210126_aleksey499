@@ -7,7 +7,7 @@ const server = new http.Server();
 
 async function createHundler (req, filepath) {
   const creater = fs.createWriteStream(filepath, { flags:'wx' })
-  const limiter = new limitSizeStream({ limit: 10000, objectMode: true})
+  const limiter = new limitSizeStream({ limit: 10000 })
 
   return new Promise((res, rej) => {
     req.on('aborted', () => res({ code: 404, value: 'DISCONECTION', isError: true }) )
