@@ -11,9 +11,17 @@ const router = new Router();
 const delayPublish = new EventEmmiter();
 
 router.get('/subscribe', async (ctx, next) => {
+    ctx.body = await new Promise(async res => {
+        delayPublish.once('publish', message => res(message))
+        await next()
+    })
 });
 
 router.post('/publish', async (ctx, next) => {
+    const message = ctx.request.body.message
+    if (message) delayPublish.emit('publish', message)
+    ctx.body = true
+    await next()
 });
 
 app.use(router.routes());
